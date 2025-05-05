@@ -18,23 +18,14 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    # Bước 2: Thiết lập JDK (Java 17 thường được sử dụng cho Minecraft plugins)
+    # Bước 2: Thiết lập JDK
     - name: Set up JDK 17
       uses: actions/setup-java@v3
       with:
         java-version: 17
         distribution: 'temurin'
 
-    # Bước 3: Tải Gradle Wrapper (nếu chưa có trong repo)
-    - name: Ensure Gradle Wrapper
-      run: |
-        if [ ! -f ./gradlew ]; then
-          echo "Gradle Wrapper not found. Generating wrapper..."
-          gradle wrapper
-        fi
-        chmod +x ./gradlew
-
-    # Bước 4: Cache dependencies của Gradle để tăng tốc độ build
+    # Bước 3: Cache Gradle dependencies
     - name: Cache Gradle dependencies
       uses: actions/cache@v3
       with:
@@ -43,13 +34,13 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-gradle-
 
-    # Bước 5: Build project bằng Gradle
+    # Bước 4: Build project bằng Gradle
     - name: Build project
       run: ./gradlew build
 
-    # Bước 6: Upload file JAR được build
-    - name: Upload JAR artifact
-      uses: actions/upload-artifact@v3
+    # Bước 5: Upload file JAR artifact
+    - name: Upload built JAR file
+      uses: actions/upload-artifact@v2
       with:
         name: built-plugin
         path: build/libs/*.jar
