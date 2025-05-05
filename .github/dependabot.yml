@@ -1,14 +1,6 @@
 version: 2
 updates:
   - package-ecosystem: "gradle"
-    directory: "/"
-    labels:
-      - "dependabot"
+    directory: "/" # Đường dẫn đến nơi chứa file build.gradle
     schedule:
-      interval: "weekly"
-  - package-ecosystem: "gradle"
-    directory: "/api/"
-    labels:
-      - "dependabot"
-    schedule:
-      interval: "weekly"
+      interval: "weekly" # Dependabot sẽ kiểm tra cập nhật mỗi tuần

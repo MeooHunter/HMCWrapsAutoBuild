@@ -1,0 +1,46 @@
+name: Build Gradle Project
+
+on:
+  workflow_dispatch: # Cho phép kích hoạt workflow thủ công
+  push:
+    branches:
+      - main # Chạy workflow khi có thay đổi ở nhánh main
+  pull_request:
+    branches:
+      - main # Chạy workflow khi có pull request đến nhánh main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Bước 1: Checkout repository
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    # Bước 2: Thiết lập JDK (Java 17 là yêu cầu phổ biến cho Gradle)
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: 17
+        distribution: 'temurin'
+
+    # Bước 3: Cache dependencies của Gradle để tăng tốc độ build
+    - name: Cache Gradle dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.gradle/caches
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+
+    # Bước 4: Build project bằng Gradle
+    - name: Build project
+      run: ./gradlew build
+
+    # Bước 5: Upload file JAR được build
+    - name: Upload JAR artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: plugin-jar
+        path: build/libs/*.jar
